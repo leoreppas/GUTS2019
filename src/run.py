@@ -76,7 +76,15 @@ def hello():
 
     elif text.startswith("end conversation"):
         state['participants'] = []
-
+        
+    elif text.startswith("Add Contact ")
+        text = text[len('Add Contact '):]
+        text = text.split()
+        for contact in list(contacts):
+            if from_number == contacts[contact]["number"]:
+                name = contact
+        contacts[text[0]] = {"number":text[1], "relation": text[2]}
+    
     else:
         if not state['participants']:
             raise
