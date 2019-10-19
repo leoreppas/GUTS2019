@@ -26,6 +26,7 @@ from twilio.rest import Client
 from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
 from src.watson import WatsonLang
+import pickle
 
 import json
 
@@ -47,7 +48,7 @@ callers = {
     "Jordan": "+447588434313"
 }
 
-contacts = {"Jordan": {"number": "+447588434316", "relation": "Friend"}}
+contacts = {"Jordan": {"number": "+447588434316", "relation": "friends"}}
 
 state = {}
 
@@ -94,6 +95,24 @@ def hello():
             to_number = state['participants'][1]
         else:
             to_number = state['participants'][0]
+
+                # Analyze text and decide to indicate if the person should send or no.
+        watch = WatsonLang()
+        emotions = watch.analyze_emotion(text)
+        # Load in 4 models
+
+        supermodels = {
+            'ex': 'exes_model.sav',
+            'friend': 'friends_model.sav',
+            'parent': 'parents_model.sav',
+            'colleague': 'colleague_model.sav'
+        }
+
+        model = pickle.load(open(friends_file,'rb'))
+        emo = [list(emotions.values())]
+        answer = model.predict(emo)
+        print(answer)
+
         print(to_number)
         send_sms(to_number, text)
     print(state)
