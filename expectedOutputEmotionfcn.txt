@@ -1,0 +1,9 @@
+Expected output for Emotion fcn
+
+dict = {
+        "sadness": 0.32665,
+        "joy": 0.563273,
+        "fear": 0.033387,
+        "disgust": 0.022637,
+        "anger": 0.041796
+       }

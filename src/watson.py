@@ -24,4 +24,4 @@ class WatsonLang:
             html="<html>{}</html>".format(text),
             features=Features(emotion=EmotionOptions())).get_result()
 
-        return(json.dumps(response["emotion"]["document"]["emotion"]))
+        return(response["emotion"]["document"]["emotion"])
