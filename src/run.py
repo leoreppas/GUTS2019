@@ -1,8 +1,37 @@
+"""
+                      .-.
+                     ()I()
+                "==.__:-:__.=="
+               "==.__/~|~\__.=="
+               "==._(  Y  )_.=="
+    .-'~~""~=--...,__\/|\/__,...--=~""~~'-.
+   (               ..=\=/=..               )
+    `'-.        ,.-"`;/=\ ;"-.,_        .-'`
+        `~"-=-~` .-~` |=| `~-. `~-=-"~`
+             .-~`    /|=|\    `~-.
+          .~`       / |=| \       `~.
+      .-~`        .'  |=|  `.        `~-.
+    (`     _,.-="`    |=|    `"=-.,_     `)
+     `~"~"`           |=|           `"~"~`
+                      |=|
+                      |=|
+                      |=|
+                      /=\\
+
+------------------------------------------------
+Author: Leonidas Reppas
+"""
+
+from twilio.rest import Client
 from flask import Flask, request, session
 from twilio.twiml.messaging_response import MessagingResponse
 from src.watson import WatsonLang
 
 import json
+
+account_sid = "AC56ad713dba7476d55ae0fe3343ead6ff"
+auth_token = "de57cf731c46e9c38f92560d63cca103"
+client = Client(account_sid, auth_token)
 
 # The session object makes use of a secret key.
 SECRET_KEY = '97d69f73e6d9b03a9ba17b895d7474b5'
@@ -11,31 +40,49 @@ app.config.from_object(__name__)
 
 # Try adding your own number to this list!
 callers = {
-    "+447484330666": "Angelos",
-    "+12349013030": "Finn",
-    "+12348134522": "Chewy",
+    "Angelos": "+447484330666",
+    "Leo": "+447484330666",
+    "Geo": "+447598734567",
+    "Andy": "447519451663"
 }
 
+state = {}
+
+def send_sms(to_num, text):
+    message = client.messages \
+                .create(
+                     body=text,
+                     from_='+15024132587',
+                     to=to_num
+                 )
 
 @app.route("/sms", methods=['GET', 'POST'])
 def hello():
-    """Respond with the number of text messages sent between two parties."""
-    # Increment the counter
-    counter = session.get('counter', 0)
-    counter += 1
+    participants = state.get('participants', [])
 
-    # Save the new counter value in the session
-    session['counter'] = counter
-
-    from_number = request.values.get('From')
+    from_number = request.values.get('From') 
     text = request.values.get('Body')
+
     watch = WatsonLang()
     emotions = watch.analyze_emotion(text)
+
+    if text.startswith("start conversation"):
+        to_num = callers.get(text.split()[3])
+        if not to_num:
+            raise
     
-    if from_number in callers:
-        name = callers[from_number]
+        state['participants'] = [to_num, from_number]
+
+    elif text.startswith("end conversation"):
+        state['participants'] = []
+
     else:
-        name = "Friend"
+        if not participants:
+            raise
+
+        participants.remove(from_number)
+
+        send_sms(participants[0], text)
 
     # Build our reply
     message = json.dumps(emotions)
