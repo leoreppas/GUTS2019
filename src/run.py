@@ -47,6 +47,8 @@ callers = {
     "Jordan": "+447588434313"
 }
 
+contacts = {"Jordan": {"number": "+447588434316", "relation": "Friend"}}
+
 state = {}
 
 def send_sms(to_num, text):
@@ -68,7 +70,7 @@ def hello():
     emotions = watch.analyze_emotion(text)
 
     if text.startswith("start conversation"):
-        to_num = callers.get(text.split()[3])
+        to_num = contacts.get(text.split()[3]).get('number')
         if not to_num:
             raise
     
@@ -77,8 +79,8 @@ def hello():
     elif text.startswith("end conversation"):
         state['participants'] = []
         
-    elif text.startswith("Add Contact ")
-        text = text[len('Add Contact '):]
+    elif text.startswith("add contact"):
+        text = text[len('add contact'):]
         text = text.split()
         for contact in list(contacts):
             if from_number == contacts[contact]["number"]:
@@ -92,8 +94,10 @@ def hello():
             to_number = state['participants'][1]
         else:
             to_number = state['participants'][0]
+        print(to_number)
         send_sms(to_number, text)
     print(state)
+    print(contacts)
     
 
     # Build our reply
