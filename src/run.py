@@ -113,7 +113,7 @@ def hello():
             model = pickle.load(open(model_file,'rb'))
             emo = [list(emotions.values())]
             answer = model.predict(emo)
-            print(list(answer)[0])
+            print(answer)
             if list(answer)[0] == '1':
                 send_sms(to_number, text)
             else:
