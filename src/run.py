@@ -48,7 +48,7 @@ callers = {
     "Jordan": "+447588434313"
 }
 
-contacts = {"Jordan": {"number": "+447588434316", "relation": "friends"}}
+contacts = {"Jordan": {"number": "+447588434316", "relation": "friend"}}
 
 state = {}
 
