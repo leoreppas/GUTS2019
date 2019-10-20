@@ -3,7 +3,7 @@
                      ()I()
                 "==.__:-:__.=="
                "==.__/~|~\__.=="
-               "==._(  Y  )_.=="
+              "==._( . Y . )_.=="
     .-'~~""~=--...,__\/|\/__,...--=~""~~'-.
    (               ..=\=/=..               )
     `'-.        ,.-"`;/=\ ;"-.,_        .-'`
@@ -71,7 +71,8 @@ def hello():
     emotions = watch.analyze_emotion(text)
 
     if text.startswith("start conversation"):
-        to_num = contacts.get(text.split()[3]).get('number')
+        state["callee"] = text.split()[3]
+        to_num = contacts.get(state["callee"]).get('number')
         if not to_num:
             raise
     
@@ -79,6 +80,7 @@ def hello():
 
     elif text.startswith("end conversation"):
         state['participants'] = []
+        state["callee"] = ''
         
     elif text.startswith("add contact"):
         text = text[len('add contact'):]
@@ -96,25 +98,28 @@ def hello():
         else:
             to_number = state['participants'][0]
 
-                # Analyze text and decide to indicate if the person should send or no.
-        watch = WatsonLang()
-        emotions = watch.analyze_emotion(text)
-        # Load in 4 models
-
-        supermodels = {
-            'ex': 'exes_model.sav',
-            'friend': 'friends_model.sav',
-            'parent': 'parents_model.sav',
-            'colleague': 'colleague_model.sav'
-        }
-
-        model = pickle.load(open(friends_file,'rb'))
-        emo = [list(emotions.values())]
-        answer = model.predict(emo)
-        print(answer)
-
-        print(to_number)
-        send_sms(to_number, text)
+        if to_number == contacts[state["callee"]]['number']:
+            # Analyze text and decide to indicate if the person should send or no.
+            watch = WatsonLang()
+            emotions = watch.analyze_emotion(text)
+            # Load in 4 models
+            models = {
+                'ex': 'exes_model.sav',
+                'friend': 'friends_model.sav',
+                'parent': 'parents_model.sav',
+                'colleague': 'colleague_model.sav'
+            }
+            model_file = models[contacts[state["callee"]]['relation']]
+            model = pickle.load(open(model_file,'rb'))
+            emo = [list(emotions.values())]
+            answer = model.predict(emo)
+            print(list(answer)[0])
+            if list(answer)[0] == '1':
+                send_sms(to_number, text)
+            else:
+                send_sms(from_number, "Your answer was deemed unworthy")
+        else:
+            send_sms(to_number, text)
     print(state)
     print(contacts)
     
