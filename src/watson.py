@@ -4,7 +4,7 @@ from ibm_watson.natural_language_understanding_v1 import Features, EmotionOption
 
 import json
 
-API_KEY = 'C4SHFrzSMqu5763Wz3AvmJZ0C-z2EpSFCuxAByXlWjFw'
+API_KEY = ''
 SERVICE_URL = 'https://gateway-lon.watsonplatform.net/natural-language-understanding/api'
 
 class WatsonLang:
