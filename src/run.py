@@ -30,25 +30,25 @@ import pickle
 
 import json
 
-account_sid = "ACb7774b0b683f617feea02e6d667beb3c"
-auth_token = "97d69f73e6d9b03a9ba17b895d7474b5"
+account_sid = ""
+auth_token = ""
 client = Client(account_sid, auth_token)
 
 # The session object makes use of a secret key.
-SECRET_KEY = '97d69f73e6d9b03a9ba17b895d7474b5'
+SECRET_KEY = ''
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 # Try adding your own number to this list!
 callers = {
-    "Angelos": "+447484330666",
-    "Leo": "+447519451663",
-    "Geo": "+447598734567",
-    "Andy": "+447519451663",
-    "Jordan": "+447588434313"
+    "Angelos": "",
+    "Leo": "",
+    "Geo": "",
+    "Andy": "",
+    "Jordan": ""
 }
 
-contacts = {"Jordan": {"number": "+447588434316", "relation": "friend"}}
+contacts = {"Jordan": {"number": "", "relation": "friend"}}
 
 state = {}
 
@@ -56,7 +56,7 @@ def send_sms(to_num, text):
     message = client.messages \
                 .create(
                      body=text,
-                     from_='+441297533050',
+                     from_='',
                      to=to_num
                  )
 
